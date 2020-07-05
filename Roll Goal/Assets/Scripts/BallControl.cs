@@ -90,13 +90,12 @@ public class BallControl : MonoBehaviour
 
     void LaunchBall()
 	{
-        //StartCoroutine(CheckForBallMovement());
+        StartCoroutine(CheckForBallMovement());
         ballSprite.transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
 	}
 
     void DestroyBall()
 	{
-        /*
         // Shrink ball
         Transform ballTrans = ballSprite.transform;
         Vector2 newScale = new Vector2(ballTrans.localScale.x - shrinkDecrement, ballTrans.localScale.y - shrinkDecrement);
@@ -108,7 +107,6 @@ public class BallControl : MonoBehaviour
             FetchBall();
             Destroy(gameObject);
         }
-        */
 	}
 
     void FetchBall()
@@ -163,14 +161,14 @@ public class BallControl : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         // If ball is barely moving or not coming along x axis, start process of destroying it
-        if (Mathf.Abs(anchorRb.velocity.x) < 2 && !hasStartedDeath)
+        if (Mathf.Abs(selfRb.velocity.x) < 2 && !hasStartedDeath)
 		{
             StartCoroutine(RemoveBall());
             hasStartedDeath = true;
 		}
 
         // If ball has completely stopped moving, immediately destroy it
-        if (Mathf.Abs(anchorRb.velocity.x) < 0.25f && anchorRb.velocity.y == 0 && !doDestroy)
+        if (Mathf.Abs(selfRb.velocity.x) < 0.25f && selfRb.velocity.y == 0 && !doDestroy)
 		{
             StopCoroutine(RemoveBall());
             doDestroy = true;
