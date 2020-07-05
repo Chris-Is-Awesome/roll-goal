@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallControl : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Refs")]
     [SerializeField] GameStats stats;
     [SerializeField] LevelData level;
     [SerializeField] Rigidbody2D anchorRb;
@@ -90,20 +90,25 @@ public class BallControl : MonoBehaviour
 
     void LaunchBall()
 	{
-        StartCoroutine(CheckForBallMovement());
+        //StartCoroutine(CheckForBallMovement());
         ballSprite.transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
 	}
 
     void DestroyBall()
 	{
+        /*
         // Shrink ball
         Transform ballTrans = ballSprite.transform;
         Vector2 newScale = new Vector2(ballTrans.localScale.x - shrinkDecrement, ballTrans.localScale.y - shrinkDecrement);
         ballTrans.localScale = newScale;
 
         // Destroy ball if it's completely shrunken
-        FetchBall();
-        Destroy(gameObject);
+        if (ballTrans.localScale == Vector3.zero)
+		{
+            FetchBall();
+            Destroy(gameObject);
+        }
+        */
 	}
 
     void FetchBall()

@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ball
+  - Hazard
+  - Button
+  - Switch
+  - Flag
   layers:
   - Default
   - TransparentFX
@@ -13,10 +18,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Background
+  - Level
+  - Interactible
+  - Prop
   - 
   - 
   - 
@@ -40,4 +45,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 923909983
+    locked: 0
+  - name: Level
+    uniqueID: 147796825
+    locked: 0
+  - name: Prop-Back
+    uniqueID: 977263473
+    locked: 0
+  - name: Ball
+    uniqueID: 4259890263
+    locked: 0
+  - name: Prop-Front
+    uniqueID: 4106591067
     locked: 0

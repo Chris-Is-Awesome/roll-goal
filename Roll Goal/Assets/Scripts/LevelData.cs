@@ -29,6 +29,6 @@ public class LevelData : MonoBehaviour
 	public void GrantBall()
 	{
 		// Give player a new ball
-		Instantiate(ballPrefab, startPos, Quaternion.identity).transform.parent = ballParent;
+		//Instantiate(ballPrefab, startPos, Quaternion.identity).transform.parent = ballParent;
 	}
 }
