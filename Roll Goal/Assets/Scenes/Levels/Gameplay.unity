@@ -3709,6 +3709,7 @@ GameObject:
   - component: {fileID: 1566205827}
   - component: {fileID: 1566205829}
   - component: {fileID: 1566205825}
+  - component: {fileID: 1566205830}
   m_Layer: 10
   m_Name: ball1
   m_TagString: Ball
@@ -3857,6 +3858,23 @@ SpringJoint2D:
   m_Distance: 0.005
   m_DampingRatio: 0
   m_Frequency: 1.375
+--- !u!114 &1566205830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1566205823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da2f8b26c0651354094dd50c6c6580fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallMat: {fileID: 6200000, guid: 72cbc7b093de72849b804ec06f75d7db, type: 2}
+  ballCollider: {fileID: 1566205827}
+  bounceStartValue: 1
+  bounceDecrement: 0.025
+  frictionIncrement: 0.0001
 --- !u!1 &1738508745
 GameObject:
   m_ObjectHideFlags: 0
