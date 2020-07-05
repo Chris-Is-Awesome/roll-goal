@@ -19,7 +19,7 @@ namespace ASG
 
 		[SerializeField] GameObject objToPool;
 		[SerializeField] Transform objPoolContainer;
-		[SerializeField] int amountToPool;
+		public int amountToPool;
 		public List<GameObject> objPool;
 
 		// Initialize instance
@@ -52,8 +52,11 @@ namespace ASG
 		{
 			for (int i = 0; i < objPool.Count; i++)
 			{
-				if (!objPool[i].activeInHierarchy)
+				if (objPool[i] != null && !objPool[i].activeInHierarchy)
+				{
+					objPool[i].SetActive(true);
 					return objPool[i];
+				}
 			}
 
 			return GeneratePool()[objPool.Count];

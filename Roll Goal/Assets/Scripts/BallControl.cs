@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BallControl : MonoBehaviour
@@ -30,11 +31,32 @@ public class BallControl : MonoBehaviour
         if (springJoint == null)
             springJoint = GetComponent<SpringJoint2D>();
 
+        /*
+        transform.localScale = Vector3.one;
+        selfRb.isKinematic = true;
         ballCollider.isTrigger = true;
+        springJoint.enabled = true;
+        */
 
         releaseDelay = 1 / (springJoint.frequency * 4);
         hasBallInHand = true;
+
+        /*
+        hasLaunched = false;
+        hasStartedDeath = false;
+        doDestroy = false;
+        */
 	}
+
+	void OnEnable()
+	{
+        anchorRb.gameObject.SetActive(true);
+        springJoint.enabled = false;
+        springJoint.enabled = true;
+
+        releaseDelay = 1 / (springJoint.frequency * 4);
+        hasBallInHand = true;
+    }
 
 	void Update()
 	{
@@ -53,7 +75,7 @@ public class BallControl : MonoBehaviour
 
 	void OnMouseDown()
 	{
-        // If haas not launched, pull ball
+        // If has not launched, pull ball
         if (!hasLaunched)
         {
             isPressed = true;
@@ -104,7 +126,15 @@ public class BallControl : MonoBehaviour
         if (ballTrans.localScale == Vector3.zero)
 		{
             FetchBall();
-            Destroy(gameObject);
+
+            // Don't destroy first ball, needed for references
+            if (!gameObject.name.Contains("(Clone)"))
+            {
+                gameObject.SetActive(false);
+                gameObject.transform.position = new Vector2(-10000f, -10000f);
+            }
+            else
+                Destroy(gameObject);
         }
 	}
 
@@ -125,30 +155,37 @@ public class BallControl : MonoBehaviour
         {
             level.GrantBall();
         }
+        // Else if no balls remain and no balls exist, end level
         else
         {
-            // TODO: Trigger failure screen!
-            Debug.Log("No more balls remaining! Level ending...");
+            bool finish1 = gameObject.name == "ball" && transform.parent.childCount < 3;
+            bool finish2 = gameObject.name == "ball(Clone)" && !transform.parent.GetChild(1).gameObject.activeInHierarchy && transform.parent.childCount < 4;
+
+            if (finish1 || finish2)
+                GameEvents.OnLevelFinish(false, 0);
         }
     }
 
-	IEnumerator ReleaseBall()
-	{
+    IEnumerator ReleaseBall()
+    {
         yield return new WaitForSeconds(releaseDelay);
         springJoint.enabled = false;
-        anchorRb.gameObject.SetActive(false);
         hasBallInHand = false;
         ballCollider.isTrigger = false;
 
-		//Update balls remainining count
-		if (level.ballsRemaining > 0)
+        //Update balls remainining count
+        if (level.ballsRemaining > 0)
 		{
 			level.ballsRemaining--;
 			// TODO: Update ball count in UI
 		}
 
-		// If allow multiple balls, spawn another ball if others remain
-		if (level.allowMultiple && level.ballsRemaining > 0)
+        // Disable anchor if not allowing multiple balls or if allowing multiple balls but no balls remain
+        if (!level.allowMultiple || (level.allowMultiple && level.ballsRemaining < 1))
+            anchorRb.gameObject.SetActive(false);
+
+        // If allow multiple balls, spawn another ball if others remain
+        if (level.allowMultiple && level.ballsRemaining > 0)
 		{
 			level.GrantBall();
 			hasBallInHand = true;
@@ -159,7 +196,7 @@ public class BallControl : MonoBehaviour
     {
         yield return new WaitForSeconds(0.1f);
 
-        // If ball is barely moving or not coming along x axis, start process of destroying it
+        // If ball is barely moving or not moving along x axis, start process of destroying it
         if (Mathf.Abs(selfRb.velocity.x) < 2 && !hasStartedDeath)
 		{
             StartCoroutine(RemoveBall());

@@ -3,7 +3,7 @@
 public class BallCollision : MonoBehaviour
 {
 	[Header("Refs")]
-	[SerializeField] PhysicsMaterial2D wallMat;
+	private PhysicsMaterial2D wallMat;
 	[SerializeField] CircleCollider2D ballCollider;
 	[Header("Data")]
 	[SerializeField] float bounceStartValue;
@@ -12,6 +12,15 @@ public class BallCollision : MonoBehaviour
 
 	void Awake()
 	{
+		// Create material
+		wallMat = new PhysicsMaterial2D
+		{
+			name = "wallBounce",
+			bounciness = bounceStartValue,
+			friction = 0f
+		};
+		GetComponent<Rigidbody2D>().sharedMaterial = wallMat;
+
 		// Default material
 		wallMat.bounciness = bounceStartValue;
 		wallMat.friction = 0f;

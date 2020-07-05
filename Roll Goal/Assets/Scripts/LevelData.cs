@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using ASG;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelData : MonoBehaviour
 {
+	[Header("Refs")]
+	[SerializeField] ObjectPooler objPooler;
 	[SerializeField] Transform ballParent;
 	[SerializeField] GameObject ballPrefab;
 	[SerializeField] Transform ballTrans;
@@ -23,11 +26,12 @@ public class LevelData : MonoBehaviour
 	void Start()
 	{
 		startPos = ballTrans.position;
+		objPooler.amountToPool = ballsRemaining - 1;
 	}
 	
 	public void GrantBall()
 	{
 		// Give player a new ball
-		Instantiate(ballPrefab, startPos, Quaternion.identity).transform.parent = ballParent;
+		objPooler.RequestObj().transform.position = startPos;
 	}
 }
