@@ -6,8 +6,6 @@ public class LevelData : MonoBehaviour
 {
 	[Header("Refs")]
 	[SerializeField] ObjectPooler objPooler;
-	[SerializeField] Transform ballParent;
-	[SerializeField] GameObject ballPrefab;
 	[SerializeField] Transform ballTrans;
 	[Header("Data")]
 	public int level = 0;
@@ -22,6 +20,8 @@ public class LevelData : MonoBehaviour
 
 	};
 	Vector3 startPos;
+	[Header("Debugging")]
+	public bool ballInHand = false;
 
 	void Start()
 	{

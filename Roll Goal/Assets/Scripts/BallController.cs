@@ -1,51 +1,49 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BallControl : MonoBehaviour
+public class BallController : MonoBehaviour
 {
     [Header("Refs")]
     [SerializeField] GameStats stats;
     [SerializeField] LevelData level;
+    [SerializeField] Debugger debugger;
     [SerializeField] Rigidbody2D anchorRb;
-    [SerializeField] GameObject ballSprite;
     [SerializeField] Collider2D ballCollider;
     private Rigidbody2D selfRb;
     private SpringJoint2D springJoint;
     [Header("Data")]
     [SerializeField] bool isPressed = false;
     [SerializeField] bool hasLaunched = false;
-    [SerializeField] bool doDestroy = false;
+    public bool doDestroy = false;
     private float maxPull = 2f;
     private float rotSpeed = 7.5f;
     private float shrinkDecrement = 0.05f;
     private float releaseDelay;
     private float destroyDelay = 5f;
     private bool  hasStartedDeath = false;
-    private bool hasBallInHand = true;
 
 	void Awake()
 	{
-        if (selfRb == null)
-            selfRb = GetComponent<Rigidbody2D>();
-        if (springJoint == null)
-            springJoint = GetComponent<SpringJoint2D>();
+        GameObject gameMaster = GameObject.Find("GameMaster");
 
-        /*
-        transform.localScale = Vector3.one;
-        selfRb.isKinematic = true;
-        ballCollider.isTrigger = true;
-        springJoint.enabled = true;
-        */
+        if (stats == null) stats = gameMaster.GetComponent<GameStats>();
+        if (stats == null) stats = gameMaster.AddComponent<GameStats>();
+        if (level == null) level = Utility.GetLevelData();
+        if (level == null) Debug.LogError("LevelData is null");
+        if (debugger == null) debugger = gameMaster.GetComponent<Debugger>();
+        if (debugger == null) debugger = gameMaster.AddComponent<Debugger>();
+        if (anchorRb == null) anchorRb = transform.parent.GetComponent<Rigidbody2D>();
+        if (anchorRb == null) Debug.LogError("anchorRb is null");
+        if (ballCollider == null) ballCollider = GetComponent<CircleCollider2D>();
+        if (ballCollider == null) Debug.LogError("ballCollider is null");
+        if (selfRb == null) selfRb = GetComponent<Rigidbody2D>();
+        if (selfRb == null) Debug.LogError("selfRb is null");
+        if (springJoint == null) springJoint = GetComponent<SpringJoint2D>();
+        if (springJoint == null) Debug.LogError("springJoint is null");
 
         releaseDelay = 1 / (springJoint.frequency * 4);
-        hasBallInHand = true;
+        level.ballInHand = true;
 
-        /*
-        hasLaunched = false;
-        hasStartedDeath = false;
-        doDestroy = false;
-        */
 	}
 
 	void OnEnable()
@@ -55,7 +53,7 @@ public class BallControl : MonoBehaviour
         springJoint.enabled = true;
 
         releaseDelay = 1 / (springJoint.frequency * 4);
-        hasBallInHand = true;
+        level.ballInHand = true;
     }
 
 	void Update()
@@ -112,57 +110,44 @@ public class BallControl : MonoBehaviour
     void LaunchBall()
 	{
         StartCoroutine(CheckForBallMovement());
-        ballSprite.transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
+        transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
 	}
 
     void DestroyBall()
 	{
         // Shrink ball
-        Transform ballTrans = ballSprite.transform;
-        Vector2 newScale = new Vector2(ballTrans.localScale.x - shrinkDecrement, ballTrans.localScale.y - shrinkDecrement);
-        ballTrans.localScale = newScale;
+        Vector2 newScale = new Vector2(transform.localScale.x - shrinkDecrement, transform.localScale.y - shrinkDecrement);
+        transform.localScale = newScale;
 
         // Destroy ball if it's completely shrunken
-        if (ballTrans.localScale == Vector3.zero)
+        if (transform.localScale == Vector3.zero)
 		{
             FetchBall();
-
-            // Don't destroy first ball, needed for references
-            if (!gameObject.name.Contains("(Clone)"))
-            {
-                gameObject.SetActive(false);
-                gameObject.transform.position = new Vector2(-10000f, -10000f);
-            }
-            else
-                Destroy(gameObject);
+            Destroy(gameObject);
         }
 	}
 
     void FetchBall()
     {
         // if there are no balls already in hand
-        foreach (BallControl ball in GameObject.Find("Balls").GetComponentsInChildren<BallControl>())
+        foreach (BallController ball in GameObject.Find("Balls").GetComponentsInChildren<BallController>())
         {
             if (!ball.hasLaunched)
             {
-                hasBallInHand = true;
+                level.ballInHand = true;
                 return;
             }
         }
 
         // If there are balls remaining and no ball is in hand, grant a new ball
-        if (!hasBallInHand && level.ballsRemaining > 0)
+        if (!level.ballInHand && level.ballsRemaining > 0)
         {
             level.GrantBall();
         }
         // Else if no balls remain and no balls exist, end level
-        else
+        else if (level.ballsRemaining < 1)
         {
-            bool finish1 = gameObject.name == "ball" && transform.parent.childCount < 3;
-            bool finish2 = gameObject.name == "ball(Clone)" && !transform.parent.GetChild(1).gameObject.activeInHierarchy && transform.parent.childCount < 4;
-
-            if (finish1 || finish2)
-                GameEvents.OnLevelFinish(false, 0);
+            GameEvents.OnLevelFinish(false, 0);
         }
     }
 
@@ -170,7 +155,7 @@ public class BallControl : MonoBehaviour
     {
         yield return new WaitForSeconds(releaseDelay);
         springJoint.enabled = false;
-        hasBallInHand = false;
+        level.ballInHand = false;
         ballCollider.isTrigger = false;
 
         //Update balls remainining count
@@ -188,7 +173,7 @@ public class BallControl : MonoBehaviour
         if (level.allowMultiple && level.ballsRemaining > 0)
 		{
 			level.GrantBall();
-			hasBallInHand = true;
+			level.ballInHand = true;
 		}
 	}
 

@@ -2774,8 +2774,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1028107738}
   - component: {fileID: 1028107739}
+  - component: {fileID: 1028107741}
   m_Layer: 0
-  m_Name: LevelData
+  m_Name: GameMaster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2808,6 +2809,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90bf1e7e358f3434a867aabfebb669bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1028107741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028107737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba397f87c37173c4dae3380670e50c46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grantBall: 0
+  deleteAll: 0
+  infiniteBalls: 0
+  noBounceDecrement: 0
+  ballsRemaining: 0
+  ballInHand: 0
+  activeBalls: []
+  ballsUsed: 0
+  bounces: 0
+  distance: 0
+  time: 0
 --- !u!1 &1124002993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,8 +3008,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1168788622}
-  - component: {fileID: 1168788621}
   - component: {fileID: 1168788620}
+  - component: {fileID: 1168788621}
   m_Layer: 0
   m_Name: Level_69420
   m_TagString: Untagged
@@ -3022,12 +3046,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objPooler: {fileID: 1168788620}
-  ballParent: {fileID: 1000645925}
-  ballPrefab: {fileID: 1566205823}
-  ballTrans: {fileID: 1566205824}
+  ballTrans: {fileID: 232000996}
   level: 69420
   ballsRemaining: 3
-  allowMultiple: 1
+  allowMultiple: 0
+  ballInHand: 0
 --- !u!4 &1168788622
 Transform:
   m_ObjectHideFlags: 0
@@ -4913,11 +4936,6 @@ PrefabInstance:
       objectReference: {fileID: 6200000, guid: 72cbc7b093de72849b804ec06f75d7db, type: 2}
     - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
-      propertyPath: events
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
-        type: 3}
       propertyPath: stats
       value: 
       objectReference: {fileID: 1028107739}
@@ -4926,6 +4944,11 @@ PrefabInstance:
       propertyPath: level
       value: 
       objectReference: {fileID: 1168788621}
+    - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
+        type: 3}
+      propertyPath: debugger
+      value: 
+      objectReference: {fileID: 1028107741}
     - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: anchorRb
