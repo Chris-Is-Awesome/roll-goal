@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ASG
@@ -52,14 +53,14 @@ namespace ASG
 		{
 			for (int i = 0; i < objPool.Count; i++)
 			{
+				if (objPool[i] == null)
+					objPool.RemoveAt(i);
+
 				if (objPool[i] != null && !objPool[i].activeInHierarchy)
-				{
-					objPool[i].SetActive(true);
 					return objPool[i];
-				}
 			}
 
-			return GeneratePool()[objPool.Count];
+			return GeneratePool()[objPool.Count - 1];
 		}
 	}
 }

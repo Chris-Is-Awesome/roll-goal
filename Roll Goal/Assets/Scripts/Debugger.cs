@@ -2,7 +2,7 @@
 using UnityEngine;
 using ASG;
 
-public class Debugger : MonoBehaviour
+public class Debugger : Singleton<Debugger>
 {
 	[Header("Refs")]
 	private LevelData level;
@@ -49,6 +49,7 @@ public class Debugger : MonoBehaviour
 	{
 		if (!ballInHand)
 		{
+			level.ballsRemaining++;
 			level.GrantBall();
 			Debug.Log("CHEAT: New ball granted!");
 			grantBall = false;

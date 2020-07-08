@@ -8,7 +8,8 @@ public class BallController : MonoBehaviour
     [SerializeField] LevelData level;
     [SerializeField] Debugger debugger;
     [SerializeField] Rigidbody2D anchorRb;
-    [SerializeField] Collider2D ballCollider;
+    [SerializeField] Collider2D selfCollider;
+    [SerializeField] BallCollision ballCollision;
     private Rigidbody2D selfRb;
     private SpringJoint2D springJoint;
     [Header("Data")]
@@ -32,28 +33,38 @@ public class BallController : MonoBehaviour
         if (level == null) Debug.LogError("LevelData is null");
         if (debugger == null) debugger = gameMaster.GetComponent<Debugger>();
         if (debugger == null) debugger = gameMaster.AddComponent<Debugger>();
+        if (ballCollision == null) ballCollision = GetComponent<BallCollision>();
+        if (ballCollision == null) Debug.LogError("ballCollision is null");
         if (anchorRb == null) anchorRb = transform.parent.GetComponent<Rigidbody2D>();
         if (anchorRb == null) Debug.LogError("anchorRb is null");
-        if (ballCollider == null) ballCollider = GetComponent<CircleCollider2D>();
-        if (ballCollider == null) Debug.LogError("ballCollider is null");
+        if (selfCollider == null) selfCollider = GetComponent<CircleCollider2D>();
+        if (selfCollider == null) Debug.LogError("selfCollider is null");
         if (selfRb == null) selfRb = GetComponent<Rigidbody2D>();
         if (selfRb == null) Debug.LogError("selfRb is null");
         if (springJoint == null) springJoint = GetComponent<SpringJoint2D>();
         if (springJoint == null) Debug.LogError("springJoint is null");
-
-        releaseDelay = 1 / (springJoint.frequency * 4);
-        level.ballInHand = true;
-
 	}
 
 	void OnEnable()
 	{
-        anchorRb.gameObject.SetActive(true);
-        springJoint.enabled = false;
-        springJoint.enabled = true;
-
+        // Set default values
+        transform.localScale = Vector3.one;
+        selfRb.isKinematic = true;
+        selfRb.sharedMaterial = new PhysicsMaterial2D()
+        {
+            name = "wallBounce",
+            friction = ballCollision.frictionStartValue,
+            bounciness = ballCollision.bounceStartValue
+        };
+        selfCollider.isTrigger = true;
+        springJoint.enabled = false; springJoint.enabled = true;
         releaseDelay = 1 / (springJoint.frequency * 4);
-        level.ballInHand = true;
+        isPressed = false;
+        hasLaunched = false;
+        hasStartedDeath = false;
+        doDestroy = false;
+        ballCollision.enabled = false; ballCollision.enabled = true;
+        debugger.ballInHand = true;
     }
 
 	void Update()
@@ -90,7 +101,6 @@ public class BallController : MonoBehaviour
             selfRb.isKinematic = false;
             hasLaunched = true;
 
-            // TODO: Update stats for # of balls thrown
             StartCoroutine(ReleaseBall());
 		}
 	}
@@ -123,7 +133,7 @@ public class BallController : MonoBehaviour
         if (transform.localScale == Vector3.zero)
 		{
             FetchBall();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
 	}
 
@@ -134,13 +144,13 @@ public class BallController : MonoBehaviour
         {
             if (!ball.hasLaunched)
             {
-                level.ballInHand = true;
+                debugger.ballInHand = true;
                 return;
             }
         }
 
         // If there are balls remaining and no ball is in hand, grant a new ball
-        if (!level.ballInHand && level.ballsRemaining > 0)
+        if (!debugger.ballInHand && level.ballsRemaining > 0)
         {
             level.GrantBall();
         }
@@ -155,8 +165,11 @@ public class BallController : MonoBehaviour
     {
         yield return new WaitForSeconds(releaseDelay);
         springJoint.enabled = false;
-        level.ballInHand = false;
-        ballCollider.isTrigger = false;
+        debugger.ballInHand = false;
+        selfCollider.isTrigger = false;
+
+        // TODO: Update stats for # of balls thrown
+        debugger.ballsUsed++;
 
         //Update balls remainining count
         if (level.ballsRemaining > 0)
@@ -173,7 +186,7 @@ public class BallController : MonoBehaviour
         if (level.allowMultiple && level.ballsRemaining > 0)
 		{
 			level.GrantBall();
-			level.ballInHand = true;
+			debugger.ballInHand = true;
 		}
 	}
 

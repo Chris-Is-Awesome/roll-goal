@@ -20,8 +20,6 @@ public class LevelData : MonoBehaviour
 
 	};
 	Vector3 startPos;
-	[Header("Debugging")]
-	public bool ballInHand = false;
 
 	void Start()
 	{
@@ -32,6 +30,8 @@ public class LevelData : MonoBehaviour
 	public void GrantBall()
 	{
 		// Give player a new ball
-		objPooler.RequestObj().transform.position = startPos;
+		GameObject newBall = objPooler.RequestObj();
+		newBall.transform.position = startPos;
+		newBall.SetActive(true);
 	}
 }

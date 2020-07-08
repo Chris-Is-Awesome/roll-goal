@@ -159,7 +159,8 @@ MonoBehaviour:
   level: {fileID: 0}
   debugger: {fileID: 0}
   anchorRb: {fileID: 0}
-  ballCollider: {fileID: 4107887299342172422}
+  selfCollider: {fileID: 4107887299342172422}
+  ballCollision: {fileID: 4107887299342172419}
   isPressed: 0
   hasLaunched: 0
   doDestroy: 0
@@ -175,7 +176,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2f8b26c0651354094dd50c6c6580fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballCollider: {fileID: 4107887299342172422}
+  selfCollider: {fileID: 4107887299342172422}
+  frictionStartValue: 0
   bounceStartValue: 1
   bounceDecrement: 0.025
   frictionIncrement: 0.0001
