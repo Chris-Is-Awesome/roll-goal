@@ -14,7 +14,7 @@ public class BallController : MonoBehaviour
     private SpringJoint2D springJoint;
     [Header("Data")]
     [SerializeField] bool isPressed = false;
-    [SerializeField] bool hasLaunched = false;
+    public bool hasLaunched = false;
     public bool doDestroy = false;
     private float maxPull = 2f;
     private float rotSpeed = 7.5f;
@@ -48,6 +48,7 @@ public class BallController : MonoBehaviour
 	void OnEnable()
 	{
         // Set default values
+        anchorRb.gameObject.SetActive(true);
         transform.localScale = Vector3.one;
         selfRb.isKinematic = true;
         selfRb.sharedMaterial = new PhysicsMaterial2D()
@@ -92,7 +93,7 @@ public class BallController : MonoBehaviour
         }
 	}
 
-	void OnMouseUp()
+	public void OnMouseUp()
 	{
 		// If has not launched, launch ball
         if (!hasLaunched)
@@ -119,12 +120,19 @@ public class BallController : MonoBehaviour
 
     void LaunchBall()
 	{
-        StartCoroutine(CheckForBallMovement());
+        if (!debugger.noBallDecay)
+            StartCoroutine(CheckForBallMovement());
+        else
+            StopCoroutine(CheckForBallMovement());
+
         transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
 	}
 
     void DestroyBall()
 	{
+        // Disable trail renderer
+        GetComponent<TrailRenderer>().enabled = false;
+        
         // Shrink ball
         Vector2 newScale = new Vector2(transform.localScale.x - shrinkDecrement, transform.localScale.y - shrinkDecrement);
         transform.localScale = newScale;
@@ -134,6 +142,7 @@ public class BallController : MonoBehaviour
 		{
             FetchBall();
             gameObject.SetActive(false);
+            debugger.activeBalls.Remove(gameObject);
         }
 	}
 
@@ -155,13 +164,13 @@ public class BallController : MonoBehaviour
             level.GrantBall();
         }
         // Else if no balls remain and no balls exist, end level
-        else if (level.ballsRemaining < 1)
+        else if (level.ballsRemaining < 1 && debugger.activeBalls.Count < 2)
         {
             GameEvents.OnLevelFinish(false, 0);
         }
     }
 
-    IEnumerator ReleaseBall()
+    public IEnumerator ReleaseBall()
     {
         yield return new WaitForSeconds(releaseDelay);
         springJoint.enabled = false;
@@ -169,6 +178,7 @@ public class BallController : MonoBehaviour
         selfCollider.isTrigger = false;
 
         // TODO: Update stats for # of balls thrown
+        debugger.activeBalls.Add(gameObject);
         debugger.ballsUsed++;
 
         //Update balls remainining count
