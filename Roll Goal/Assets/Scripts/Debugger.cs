@@ -7,19 +7,31 @@ public class Debugger : Singleton<Debugger>
 	[Header("Refs")]
 	private LevelData level;
 	[Header("Cheats")]
-	public bool grantBall = false;
-	public bool deleteAll = false;
-	public bool infiniteBalls = false;
-	public bool noBallDecay = false;
-	public bool autoThrow = false;
 	public int ballsRemaining = 0;
+	[Space]
+	public bool grantBall = false;
+	public bool infiniteBalls = false;
+	public bool autoThrow = false;
+	public bool noBallDecay = false;
+	public bool deleteAll = false;
+	[Space]
+	public float speedOverride = 0f;
+	public float frictionOverride = 0f;
+	public float bounceOverride = 0f;
+	[Space]
+	public bool goToNextLevel = false;
+	public bool goToPrevLevel = false;
 	[Header("Balls")]
 	[CustomAttributes.ReadOnly] public bool ballInHand = false;
 	[CustomAttributes.ReadOnly] public List<GameObject> activeBalls = new List<GameObject>();
 	[Header("Level")]
 	[CustomAttributes.ReadOnly] public int ballsUsed = 0;
 	[CustomAttributes.ReadOnly] public int bounces = 0;
-	[CustomAttributes.ReadOnly] public float distance = 0f;
+	[HideInInspector] public float distanceInFeet = 0f;
+	[CustomAttributes.ReadOnly] public string speed = "0 ft/s";
+	[CustomAttributes.ReadOnly] public string highestSpeed = "0 ft/s";
+	[CustomAttributes.ReadOnly] public string distance = "0 feet (0 miles)";
+	[CustomAttributes.ReadOnly] public string highestDistance = "0 feet (0 miles)";
 	[CustomAttributes.ReadOnly] public float time = 0f;
 
 	void Awake()
@@ -56,6 +68,10 @@ public class Debugger : Singleton<Debugger>
 			// Infinite balls
 			if (infiniteBalls && level.ballsRemaining < 999)
 				level.ballsRemaining = 999;
+
+			// Update balls remaining
+			if (level.ballsRemaining != ballsRemaining)
+				level.ballsRemaining = ballsRemaining;
 
 			// Auto throw
 			if ((autoThrow || Input.GetKey(KeyCode.Keypad0)) && ballInHand)

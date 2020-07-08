@@ -22,6 +22,7 @@ public class BallController : MonoBehaviour
     private float releaseDelay;
     private float destroyDelay = 5f;
     private bool  hasStartedDeath = false;
+    private Vector3 lastPosition;
 
 	void Awake()
 	{
@@ -66,6 +67,7 @@ public class BallController : MonoBehaviour
         hasStartedDeath = false;
         doDestroy = false;
         ballCollision.enabled = false; ballCollision.enabled = true;
+        debugger.ballsRemaining = level.ballsRemaining;
         debugger.ballInHand = true;
     }
 
@@ -103,6 +105,8 @@ public class BallController : MonoBehaviour
             selfRb.isKinematic = false;
             hasLaunched = true;
 
+            GameEvents.OnBallThrow(this);
+
             StartCoroutine(ReleaseBall());
 		}
 	}
@@ -126,8 +130,26 @@ public class BallController : MonoBehaviour
         else
             StopCoroutine(CheckForBallMovement());
 
+        // Rotate ball
         transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
-	}
+
+        if (selfRb.velocity.x != 0)
+        {
+            // Measure speed
+            if (transform.position != lastPosition)
+            {
+                debugger.speed = ((Vector2.Distance(transform.position, lastPosition) * 3.28084f) / Time.deltaTime).ToString("0.00") + " ft/s";
+                lastPosition = transform.position;
+            }
+
+            // Measure distance
+            float distanceInFeet = debugger.distanceInFeet++ * 3.28084f;
+            float distanceInMiles = distanceInFeet / 5280f;
+            debugger.distance = distanceInFeet.ToString("0.00") + " feet (" + distanceInMiles.ToString("0.00") + " miles)";
+        }
+        else if (debugger.speed != "0 ft/s")
+            debugger.speed = "0 ft/s";
+    }
 
     void DestroyBall()
 	{
@@ -186,8 +208,9 @@ public class BallController : MonoBehaviour
         if (level.ballsRemaining > 0)
 		{
 			level.ballsRemaining--;
-			// TODO: Update ball count in UI
-		}
+            debugger.ballsRemaining--;
+            // TODO: Update ball count in UI
+        }
 
         // Disable anchor if not allowing multiple balls or if allowing multiple balls but no balls remain
         if (!level.allowMultiple || (level.allowMultiple && level.ballsRemaining < 1))

@@ -5,8 +5,8 @@ using UnityEngine;
 public class LevelData : MonoBehaviour
 {
 	[Header("Refs")]
-	[SerializeField] ObjectPooler objPooler;
-	[SerializeField] Transform ballTrans;
+	[SerializeField] ObjectPooler objPooler = null;
+	[SerializeField] Transform ballTrans = null;
 	[Header("Data")]
 	public int level = 0;
 	public int ballsRemaining = 0;

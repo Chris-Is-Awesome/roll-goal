@@ -18,9 +18,9 @@ namespace ASG
 			}
 		}
 
-		[SerializeField] GameObject objToPool;
-		[SerializeField] Transform objPoolContainer;
-		public int amountToPool;
+		[SerializeField] GameObject objToPool = null;
+		[SerializeField] Transform objPoolContainer = null;
+		public int amountToPool = 0;
 		public List<GameObject> objPool;
 
 		// Initialize instance
