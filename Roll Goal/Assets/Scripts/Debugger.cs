@@ -46,14 +46,19 @@ public class Debugger : Singleton<Debugger>
 
 			// Destroy all balls
 			if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace) || deleteAll)
-				Cheat_RemoveAllBalls();
+			{
+				if (activeBalls.Count > 0)
+					Cheat_RemoveAllBalls();
+				else
+					deleteAll = false;
+			}
 
 			// Infinite balls
 			if (infiniteBalls && level.ballsRemaining < 999)
 				level.ballsRemaining = 999;
 
 			// Auto throw
-			if (autoThrow && ballInHand)
+			if ((autoThrow || Input.GetKey(KeyCode.Keypad0)) && ballInHand)
 			{
 				GameObject ballHolder = GameObject.Find("Balls");
 				foreach (BallController ball in ballHolder.GetComponentsInChildren<BallController>())

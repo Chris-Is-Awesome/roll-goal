@@ -49,6 +49,7 @@ public class BallController : MonoBehaviour
 	{
         // Set default values
         anchorRb.gameObject.SetActive(true);
+        transform.position = anchorRb.transform.position;
         transform.localScale = Vector3.one;
         selfRb.isKinematic = true;
         selfRb.sharedMaterial = new PhysicsMaterial2D()
