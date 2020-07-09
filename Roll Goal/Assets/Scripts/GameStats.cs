@@ -9,12 +9,12 @@ public class GameStats : MonoBehaviour
 	private BallController currBall = null;
 	[Header("Stats")]
 	// Balls
-	[CustomAttributes.ReadOnly] public int ballsUsedThisRound = 0;
-	[CustomAttributes.ReadOnly] public int ballsUsedOverall = 0;
-	[CustomAttributes.ReadOnly] public int ballBouncesThisRound = 0;
-	[CustomAttributes.ReadOnly] public int ballBouncesOverall = 0;
-	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsThisRound = 0;
-	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsOverall = 0;
+	[CustomAttributes.ReadOnly] public int ballsUsedThisRound;
+	[CustomAttributes.ReadOnly] public int ballsUsedOverall;
+	[CustomAttributes.ReadOnly] public int ballBouncesThisRound;
+	[CustomAttributes.ReadOnly] public int ballBouncesOverall;
+	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsThisRound;
+	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsOverall;
 	// Speed
 	[CustomAttributes.ReadOnly] public string currentBallSpeed = "0.0 ft/s";
 	[CustomAttributes.ReadOnly] public string highestSpeedThisRound = "0.0 ft/s";
@@ -32,8 +32,8 @@ public class GameStats : MonoBehaviour
 	[CustomAttributes.ReadOnly] public string totalTimePlayingGame = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
 	[Header("Data")]
 	private Vector3 lastBallPosition;
-	private float distanceInFeet = 0f;
-	private float distanceInMiles = 0f;
+	private float distanceInFeet;
+	private float distanceInMiles;
 
 	void OnEnable()
 	{

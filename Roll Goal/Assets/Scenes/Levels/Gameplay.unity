@@ -654,7 +654,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 232000993}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.17, y: 0.57, z: 0}
+  m_LocalPosition: {x: 0.2, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1000645925}
@@ -1656,7 +1656,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1028107738}
   - component: {fileID: 1028107739}
-  - component: {fileID: 1028107741}
+  - component: {fileID: 1028107740}
   m_Layer: 0
   m_Name: GameMaster
   m_TagString: Untagged
@@ -1691,7 +1691,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90bf1e7e358f3434a867aabfebb669bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1028107741
+  ballsUsedThisRound: 0
+  ballsUsedOverall: 0
+  ballBouncesThisRound: 0
+  ballBouncesOverall: 0
+  ballBouncesWithBallsThisRound: 0
+  ballBouncesWithBallsOverall: 0
+  currentBallSpeed: 0.0 ft/s
+  highestSpeedThisRound: 0.0 ft/s
+  highestSpeedOverall: 0.0 ft/s
+  currentBallDistance: 0.0 feet (0.0 miles)
+  distanceThisRound: 0.0 feet (0.0 miles)
+  highestDistanceThisRound: 0.0 feet (0.0 miles)
+  distanceOverall: 0.0 feet (0.0 miles)
+  highestDistanceOverall: 0.0 feet (0.0 miles)
+  currentTime: 00:00.000
+  fastestTimeForLevel: 00:00.000
+  totalTimeSpentOnLevel: 0d, 0h, 0m, 0s
+  totalTimePlayingGame: 0w, 0d, 0m, 0s
+--- !u!114 &1028107740
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1703,17 +1721,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba397f87c37173c4dae3380670e50c46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grantBall: 0
-  deleteAll: 0
-  infiniteBalls: 0
-  noBallDecay: 0
-  autoThrow: 0
   ballsRemaining: 0
+  grantBall: 0
+  infiniteBalls: 0
+  autoThrow: 0
+  noBallDecay: 0
+  deleteAll: 0
+  speedOverride: 0
+  frictionOverride: 0
+  bounceOverride: 0
+  goToNextLevel: 0
+  goToPrevLevel: 0
   ballInHand: 0
   activeBalls: []
   ballsUsed: 0
   bounces: 0
-  distance: 0
+  distanceInFeet: 0
+  speed: 
+  highestSpeed: 0 ft/s
+  distance: 0 feet (0 miles)
+  highestDistance: 0 feet (0 miles)
   time: 0
 --- !u!1 &1124002993
 GameObject:
@@ -2774,6 +2801,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1000645925}
     m_Modifications:
+    - target: {fileID: 1566205831, guid: 9f03891e6c74c924484f6da90772112a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172416, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: m_ConnectedRigidBody
@@ -2798,21 +2829,26 @@ PrefabInstance:
         type: 3}
       propertyPath: debugger
       value: 
-      objectReference: {fileID: 1028107741}
+      objectReference: {fileID: 1028107740}
     - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: anchorRb
       value: 
       objectReference: {fileID: 232000994}
+    - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
+        type: 3}
+      propertyPath: bounciness
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172421, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.17000008
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172421, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.56999993
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172421, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}

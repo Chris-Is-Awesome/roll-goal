@@ -95,7 +95,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4107887299342172666}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -256,11 +256,21 @@ MonoBehaviour:
   stats: {fileID: 0}
   level: {fileID: 0}
   debugger: {fileID: 0}
+  trailRenderer: {fileID: 0}
   anchorRb: {fileID: 0}
   selfCollider: {fileID: 4107887299342172422}
   ballCollision: {fileID: 4107887299342172419}
+  bounciness: 1.9
+  maxPull: 2
+  rotSpeed: 7.5
+  shrinkDecrement: 0.05
+  releaseDelay: 0
+  destroyDelay: 5
+  invincilityTime: 2
+  invincible: 0
   isPressed: 0
   hasLaunched: 0
+  hasStartedDeath: 0
   doDestroy: 0
 --- !u!114 &4107887299342172419
 MonoBehaviour:

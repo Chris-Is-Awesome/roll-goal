@@ -7,32 +7,32 @@ public class Debugger : Singleton<Debugger>
 	[Header("Refs")]
 	private LevelData level;
 	[Header("Cheats")]
-	public int ballsRemaining = 0;
+	public int ballsRemaining;
 	[Space]
-	public bool grantBall = false;
-	public bool infiniteBalls = false;
-	public bool autoThrow = false;
-	public bool noBallDecay = false;
-	public bool deleteAll = false;
+	public bool grantBall;
+	public bool infiniteBalls;
+	public bool autoThrow;
+	public bool noBallDecay;
+	public bool deleteAll;
 	[Space]
-	public float speedOverride = 0f;
-	public float frictionOverride = 0f;
-	public float bounceOverride = 0f;
+	public float speedOverride;
+	public float frictionOverride;
+	public float bounceOverride;
 	[Space]
-	public bool goToNextLevel = false;
-	public bool goToPrevLevel = false;
+	public bool goToNextLevel;
+	public bool goToPrevLevel;
 	[Header("Balls")]
-	[CustomAttributes.ReadOnly] public bool ballInHand = false;
+	[CustomAttributes.ReadOnly] public bool ballInHand;
 	[CustomAttributes.ReadOnly] public List<GameObject> activeBalls = new List<GameObject>();
 	[Header("Level")]
-	[CustomAttributes.ReadOnly] public int ballsUsed = 0;
-	[CustomAttributes.ReadOnly] public int bounces = 0;
-	[HideInInspector] public float distanceInFeet = 0f;
+	[CustomAttributes.ReadOnly] public int ballsUsed;
+	[CustomAttributes.ReadOnly] public int bounces;
+	[HideInInspector] public float distanceInFeet;
 	[CustomAttributes.ReadOnly] public string speed = "0 ft/s";
 	[CustomAttributes.ReadOnly] public string highestSpeed = "0 ft/s";
 	[CustomAttributes.ReadOnly] public string distance = "0 feet (0 miles)";
 	[CustomAttributes.ReadOnly] public string highestDistance = "0 feet (0 miles)";
-	[CustomAttributes.ReadOnly] public float time = 0f;
+	[CustomAttributes.ReadOnly] public float time;
 
 	void Awake()
 	{

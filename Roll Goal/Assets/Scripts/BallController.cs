@@ -7,24 +7,29 @@ public class BallController : MonoBehaviour
     [SerializeField] GameStats stats;
     [SerializeField] LevelData level;
     [SerializeField] Debugger debugger;
+    [SerializeField] TrailRenderer trailRenderer;
     [SerializeField] Rigidbody2D anchorRb;
     [SerializeField] Collider2D selfCollider;
     [SerializeField] BallCollision ballCollision;
-    private Rigidbody2D selfRb;
-    private SpringJoint2D springJoint;
+    Rigidbody2D selfRb;
+    SpringJoint2D springJoint;
     [Header("Data")]
-    [SerializeField] bool isPressed = false;
-    public bool hasLaunched = false;
-    public bool doDestroy = false;
-    private float maxPull = 2f;
-    private float rotSpeed = 7.5f;
-    private float shrinkDecrement = 0.05f;
-    private float releaseDelay;
-    private float destroyDelay = 5f;
-    private bool  hasStartedDeath = false;
-    private Vector3 lastPosition;
+    [SerializeField] float bounciness;
+    [SerializeField] float maxPull;
+    [SerializeField] float rotSpeed;
+    [SerializeField] float shrinkDecrement;
+    [SerializeField] float releaseDelay;
+    [SerializeField] float destroyDelay;
+    [SerializeField] float invincilityTime;
+    public bool invincible;
+    [SerializeField] bool isPressed;
+    public bool hasLaunched;
+    public bool hasStartedDeath;
+    public bool doDestroy; // Public to allow debugger to destroy balls
+    Vector3 lastPosition;
+    float invincibilityTimer;
 
-	void Awake()
+    void Awake()
 	{
         GameObject gameMaster = GameObject.Find("GameMaster");
 
@@ -36,6 +41,8 @@ public class BallController : MonoBehaviour
         if (debugger == null) debugger = gameMaster.AddComponent<Debugger>();
         if (ballCollision == null) ballCollision = GetComponent<BallCollision>();
         if (ballCollision == null) Debug.LogError("ballCollision is null");
+        if (trailRenderer == null) trailRenderer = GetComponent<TrailRenderer>();
+        if (trailRenderer == null) Debug.LogError("trailRenderer is null");
         if (anchorRb == null) anchorRb = transform.parent.GetComponent<Rigidbody2D>();
         if (anchorRb == null) Debug.LogError("anchorRb is null");
         if (selfCollider == null) selfCollider = GetComponent<CircleCollider2D>();
@@ -52,6 +59,7 @@ public class BallController : MonoBehaviour
         anchorRb.gameObject.SetActive(true);
         transform.position = anchorRb.transform.position;
         transform.localScale = Vector3.one;
+        trailRenderer.enabled = false;
         selfRb.isKinematic = true;
         selfRb.sharedMaterial = new PhysicsMaterial2D()
         {
@@ -67,8 +75,10 @@ public class BallController : MonoBehaviour
         hasStartedDeath = false;
         doDestroy = false;
         ballCollision.enabled = false; ballCollision.enabled = true;
+        invincibilityTimer = invincilityTime;
         debugger.ballsRemaining = level.ballsRemaining;
         debugger.ballInHand = true;
+        Physics2D.velocityThreshold = bounciness;
     }
 
 	void Update()
@@ -84,6 +94,18 @@ public class BallController : MonoBehaviour
         // If destroying ball, shrink it, then destroy it
         if (doDestroy)
             DestroyBall();
+
+        // Countdown invincibility time
+        if (invincible)
+		{
+            invincibilityTimer -= Time.deltaTime;
+
+            if (invincibilityTimer <= 0)
+            {
+                invincibilityTimer = invincilityTime;
+                invincible = false;
+            }
+		}
 	}
 
 	void OnMouseDown()
@@ -125,7 +147,7 @@ public class BallController : MonoBehaviour
 
     void LaunchBall()
 	{
-        if (!debugger.noBallDecay)
+        if (!invincible && !debugger.noBallDecay)
             StartCoroutine(CheckForBallMovement());
         else
             StopCoroutine(CheckForBallMovement());
@@ -154,7 +176,7 @@ public class BallController : MonoBehaviour
     void DestroyBall()
 	{
         // Disable trail renderer
-        GetComponent<TrailRenderer>().enabled = false;
+        trailRenderer.enabled = false;
         
         // Shrink ball
         Vector2 newScale = new Vector2(transform.localScale.x - shrinkDecrement, transform.localScale.y - shrinkDecrement);
@@ -196,6 +218,7 @@ public class BallController : MonoBehaviour
     public IEnumerator ReleaseBall()
     {
         yield return new WaitForSeconds(releaseDelay);
+        trailRenderer.enabled = true;
         springJoint.enabled = false;
         debugger.ballInHand = false;
         selfCollider.isTrigger = false;
@@ -246,7 +269,10 @@ public class BallController : MonoBehaviour
     IEnumerator RemoveBall()
 	{
         yield return new WaitForSeconds(destroyDelay);
-        doDestroy = true;
+        
+        if (!invincible)
+            doDestroy = true;
+
         StopCoroutine(RemoveBall());
     }
 }
