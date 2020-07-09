@@ -1655,8 +1655,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1028107738}
-  - component: {fileID: 1028107739}
   - component: {fileID: 1028107740}
+  - component: {fileID: 1028107739}
   m_Layer: 0
   m_Name: GameMaster
   m_TagString: Untagged
@@ -1704,7 +1704,6 @@ MonoBehaviour:
   distanceThisRound: 0.0 feet (0.0 miles)
   highestDistanceThisRound: 0.0 feet (0.0 miles)
   distanceOverall: 0.0 feet (0.0 miles)
-  highestDistanceOverall: 0.0 feet (0.0 miles)
   currentTime: 00:00.000
   fastestTimeForLevel: 00:00.000
   totalTimeSpentOnLevel: 0d, 0h, 0m, 0s
@@ -1727,21 +1726,10 @@ MonoBehaviour:
   autoThrow: 0
   noBallDecay: 0
   deleteAll: 0
-  speedOverride: 0
-  frictionOverride: 0
-  bounceOverride: 0
   goToNextLevel: 0
   goToPrevLevel: 0
   ballInHand: 0
   activeBalls: []
-  ballsUsed: 0
-  bounces: 0
-  distanceInFeet: 0
-  speed: 
-  highestSpeed: 0 ft/s
-  distance: 0 feet (0 miles)
-  highestDistance: 0 feet (0 miles)
-  time: 0
 --- !u!1 &1124002993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2801,10 +2789,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1000645925}
     m_Modifications:
-    - target: {fileID: 1566205831, guid: 9f03891e6c74c924484f6da90772112a, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172416, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: m_ConnectedRigidBody
@@ -2835,11 +2819,6 @@ PrefabInstance:
       propertyPath: anchorRb
       value: 
       objectReference: {fileID: 232000994}
-    - target: {fileID: 4107887299342172420, guid: 9f03891e6c74c924484f6da90772112a,
-        type: 3}
-      propertyPath: bounciness
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 4107887299342172421, guid: 9f03891e6c74c924484f6da90772112a,
         type: 3}
       propertyPath: m_LocalPosition.x

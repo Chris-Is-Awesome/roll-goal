@@ -14,7 +14,6 @@ public class BallController : MonoBehaviour
     Rigidbody2D selfRb;
     SpringJoint2D springJoint;
     [Header("Data")]
-    [SerializeField] float bounciness;
     [SerializeField] float maxPull;
     [SerializeField] float rotSpeed;
     [SerializeField] float shrinkDecrement;
@@ -78,7 +77,6 @@ public class BallController : MonoBehaviour
         invincibilityTimer = invincilityTime;
         debugger.ballsRemaining = level.ballsRemaining;
         debugger.ballInHand = true;
-        Physics2D.velocityThreshold = bounciness;
     }
 
 	void Update()
@@ -127,7 +125,7 @@ public class BallController : MonoBehaviour
             selfRb.isKinematic = false;
             hasLaunched = true;
 
-            GameEvents.OnBallThrow(this);
+            GameEvents.OnBallThrown(this);
 
             StartCoroutine(ReleaseBall());
 		}
@@ -155,22 +153,8 @@ public class BallController : MonoBehaviour
         // Rotate ball
         transform.Rotate(new Vector3(0, 0, -selfRb.velocity.x / 5) * rotSpeed);
 
-        if (selfRb.velocity.x != 0)
-        {
-            // Measure speed
-            if (transform.position != lastPosition)
-            {
-                debugger.speed = ((Vector2.Distance(transform.position, lastPosition) * 3.28084f) / Time.deltaTime).ToString("0.00") + " ft/s";
-                lastPosition = transform.position;
-            }
-
-            // Measure distance
-            float distanceInFeet = debugger.distanceInFeet++ * 3.28084f;
-            float distanceInMiles = distanceInFeet / 5280f;
-            debugger.distance = distanceInFeet.ToString("0.00") + " feet (" + distanceInMiles.ToString("0.00") + " miles)";
-        }
-        else if (debugger.speed != "0 ft/s")
-            debugger.speed = "0 ft/s";
+        // Enable trail renderer
+        trailRenderer.enabled = true;
     }
 
     void DestroyBall()
@@ -186,8 +170,9 @@ public class BallController : MonoBehaviour
         if (transform.localScale == Vector3.zero)
 		{
             FetchBall();
-            gameObject.SetActive(false);
             debugger.activeBalls.Remove(gameObject);
+            GameEvents.OnBallDestroyed(this);
+            gameObject.SetActive(false);
         }
 	}
 
@@ -211,21 +196,18 @@ public class BallController : MonoBehaviour
         // Else if no balls remain and no balls exist, end level
         else if (level.ballsRemaining < 1 && debugger.activeBalls.Count < 2)
         {
-            GameEvents.OnLevelFinish(false, 0);
+            GameEvents.OnLevelFinished(false, 0);
         }
     }
 
     public IEnumerator ReleaseBall()
     {
         yield return new WaitForSeconds(releaseDelay);
-        trailRenderer.enabled = true;
         springJoint.enabled = false;
         debugger.ballInHand = false;
         selfCollider.isTrigger = false;
 
-        // TODO: Update stats for # of balls thrown
         debugger.activeBalls.Add(gameObject);
-        debugger.ballsUsed++;
 
         //Update balls remainining count
         if (level.ballsRemaining > 0)

@@ -1,22 +1,30 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameEvents
 {
-	public static event Action<BallController> onBallThrow;
-	public static void OnBallThrow(BallController ball)
+	public static event Action<BallController> OnBallThrow;
+	public static void OnBallThrown(BallController ball)
 	{
-		onBallThrow?.Invoke(ball);
+		OnBallThrow?.Invoke(ball);
+	}
+	public static event Action<BallController> OnBallDestroy;
+	public static void OnBallDestroyed(BallController ball)
+	{
+		OnBallDestroy?.Invoke(ball);
+	}
+	public static event Action<BallCollision> OnBallBounce;
+	public static void OnBallBounced(BallCollision ball)
+	{
+		OnBallBounce?.Invoke(ball);
 	}
 
-	public static event Action<bool, int> onLevelFinish;
-	public static void OnLevelFinish(bool win, int ballsUsed)
+	public static event Action<bool, int> OnLevelFinish;
+	public static void OnLevelFinished(bool win, int ballsUsed)
 	{
 		// TODO: Trigger failure screen!
 		Debug.Log("No more balls remaining! Level ending...");
 
-		onLevelFinish?.Invoke(win, ballsUsed);
+		OnLevelFinish?.Invoke(win, ballsUsed);
 	}
 }

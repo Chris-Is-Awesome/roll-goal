@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ASG;
 
-public class GameStats : MonoBehaviour
+public class GameStats : Singleton<GameStats>
 {
 	[Header("Refs")]
 	private BallController currBall = null;
@@ -13,8 +13,8 @@ public class GameStats : MonoBehaviour
 	[CustomAttributes.ReadOnly] public int ballsUsedOverall;
 	[CustomAttributes.ReadOnly] public int ballBouncesThisRound;
 	[CustomAttributes.ReadOnly] public int ballBouncesOverall;
-	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsThisRound;
-	[CustomAttributes.ReadOnly] public int ballBouncesWithBallsOverall;
+	[CustomAttributes.ReadOnly] public float ballBouncesWithBallsThisRound;
+	[CustomAttributes.ReadOnly] public float ballBouncesWithBallsOverall;
 	// Speed
 	[CustomAttributes.ReadOnly] public string currentBallSpeed = "0.0 ft/s";
 	[CustomAttributes.ReadOnly] public string highestSpeedThisRound = "0.0 ft/s";
@@ -24,53 +24,84 @@ public class GameStats : MonoBehaviour
 	[CustomAttributes.ReadOnly] public string distanceThisRound = "0.0 feet (0.0 miles)";
 	[CustomAttributes.ReadOnly] public string highestDistanceThisRound = "0.0 feet (0.0 miles)";
 	[CustomAttributes.ReadOnly] public string distanceOverall = "0.0 feet (0.0 miles)";
-	[CustomAttributes.ReadOnly] public string highestDistanceOverall = "0.0 feet (0.0 miles)";
 	// Time
 	[CustomAttributes.ReadOnly] public string currentTime = "00:00.000";
 	[CustomAttributes.ReadOnly] public string fastestTimeForLevel = "00:00.000";
 	[CustomAttributes.ReadOnly] public string totalTimeSpentOnLevel = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
 	[CustomAttributes.ReadOnly] public string totalTimePlayingGame = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
 	[Header("Data")]
-	private Vector3 lastBallPosition;
-	private float distanceInFeet;
-	private float distanceInMiles;
+	Vector3 lastBallPosition;
+	float distanceInFeetCurrent;
+	float distanceInMilesCurrent;
+	float distanceInFeetRound;
+	float distanceInMilesRound;
 
-	void OnEnable()
+	void Awake()
 	{
-		GameEvents.onBallThrow += Event_OnBallThrow;
+		GameEvents.OnBallThrow += Event_OnBallThrow;
+		GameEvents.OnBallDestroy += Event_OnBallDestroy;
+		GameEvents.OnBallBounce += Event_OnBallBounce;
+
+		// Load saved stats
+		ballsUsedOverall = PlayerPrefs.GetInt("stat_ballsUsedOverall");
+		ballBouncesOverall = PlayerPrefs.GetInt("stat_bouncesOverall");
+		ballBouncesWithBallsOverall = PlayerPrefs.GetFloat("stat_bouncesWithBallsOverall");
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		if (currBall != null)
 		{
-			Stats_CalculateDistance();
+			Stats_CalculateBallStats();
 		}
 	}
 
-	void Stats_CalculateDistance()
+	void Stats_CalculateBallStats()
 	{
 		Rigidbody2D ballRb = currBall.GetComponent<Rigidbody2D>();
 
-		// Measure distance
 		if (ballRb.velocity.x != 0)
 		{
-			float distance = Vector3.Distance(transform.position, lastBallPosition);
-			distanceInFeet = distanceInFeet + distance;
-			distanceInMiles = distanceInFeet / 5280f;
-			currentBallDistance = distanceInFeet.ToString("0.00") + " feet (" + distanceInMiles.ToString("0.00") + " miles)";
+			float distance = Vector2.Distance(transform.localPosition, lastBallPosition);
 
-			lastBallPosition = currBall.transform.position;
+			// Measure speed
+			if (transform.position != lastBallPosition)
+			{
+				currentBallSpeed = distance.ToString("0.00") + " ft/s";
+			}
+
+			// Current ball distance
+			distanceInFeetCurrent += distance;
+			distanceInMilesCurrent = distanceInFeetCurrent / 5280f;
+			currentBallDistance = distanceInFeetCurrent.ToString("0.00") + " feet (" + distanceInMilesCurrent.ToString("0.00") + " miles)";
+
+			// Distance this round
+			distanceInFeetRound += distance;
+			distanceInMilesRound = distanceInFeetRound / 5280f;
+			distanceThisRound = distanceInFeetRound.ToString("0.00") + " feet (" + distanceInMilesRound.ToString("0.00") + " miles)";
+
+			lastBallPosition = currBall.transform.localPosition;
 		}
-
-		//distanceInFeet = distanceInFeet++ * 3.28084f;
-		//distanceInMiles = distanceInFeet / 5280f;
-		//currentDistance = distanceInFeet.ToString("0.00") + " feet (" + distanceInMiles.ToString("0.00") + " miles)";
+		else
+		{
+			// Speed is 0
+			currentBallSpeed = 0f + " ft/s";
+		}
 	}
 
 	void Event_OnBallThrow(BallController ball)
 	{
-		lastBallPosition = ball.transform.position;
+		// Reset current ball stats
+		distanceInFeetCurrent = 0f;
+		distanceInMilesCurrent = 0f;
+		currentBallDistance = "0.0 feet (0.0 miles)";
+
+		lastBallPosition = ball.transform.localPosition;
+
+		// Update balls thrown stats
+		ballsUsedThisRound++;
+		ballsUsedOverall = PlayerPrefs.GetInt("stat_ballsUsedOverall") + 1;
+		PlayerPrefs.SetInt("stat_ballsUsedOverall", ballsUsedOverall);
 
 		// MUST BE AT END!
 		currBall = ball;
@@ -79,5 +110,12 @@ public class GameStats : MonoBehaviour
 	void Event_OnBallDestroy(BallController ball)
 	{
 		//
+	}
+
+	void Event_OnBallBounce(BallCollision ball)
+	{
+		ballBouncesThisRound++;
+		ballBouncesOverall = PlayerPrefs.GetInt("stat_bouncesOverall") + 1;
+		PlayerPrefs.SetInt("stat_bouncesOverall", ballBouncesOverall);
 	}
 }

@@ -15,24 +15,11 @@ public class Debugger : Singleton<Debugger>
 	public bool noBallDecay;
 	public bool deleteAll;
 	[Space]
-	public float speedOverride;
-	public float frictionOverride;
-	public float bounceOverride;
-	[Space]
 	public bool goToNextLevel;
 	public bool goToPrevLevel;
 	[Header("Balls")]
 	[CustomAttributes.ReadOnly] public bool ballInHand;
 	[CustomAttributes.ReadOnly] public List<GameObject> activeBalls = new List<GameObject>();
-	[Header("Level")]
-	[CustomAttributes.ReadOnly] public int ballsUsed;
-	[CustomAttributes.ReadOnly] public int bounces;
-	[HideInInspector] public float distanceInFeet;
-	[CustomAttributes.ReadOnly] public string speed = "0 ft/s";
-	[CustomAttributes.ReadOnly] public string highestSpeed = "0 ft/s";
-	[CustomAttributes.ReadOnly] public string distance = "0 feet (0 miles)";
-	[CustomAttributes.ReadOnly] public string highestDistance = "0 feet (0 miles)";
-	[CustomAttributes.ReadOnly] public float time;
 
 	void Awake()
 	{
@@ -81,7 +68,7 @@ public class Debugger : Singleton<Debugger>
 				{
 					if (!ball.hasLaunched)
 					{
-						int rng = Random.Range(0, 7);
+						int rng = Random.Range(0, 5);
 						float xPos = ball.transform.position.x;
 						float yPos = ball.transform.position.y;
 
@@ -107,12 +94,6 @@ public class Debugger : Singleton<Debugger>
 								break;
 							case 5:
 								xPos += 1.75f;
-								yPos += 2f;
-								break;
-							case 6:
-								yPos -= 2f;
-								break;
-							case 7:
 								yPos += 2f;
 								break;
 						}

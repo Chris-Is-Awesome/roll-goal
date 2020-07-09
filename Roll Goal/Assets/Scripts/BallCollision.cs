@@ -4,8 +4,14 @@ public class BallCollision : MonoBehaviour
 {
 	[Header("Refs")]
 	[Header("Data")]
+	public float bounceTolerance;
 	public float frictionStartValue;
 	public float bounceStartValue;
+
+	void OnEnable()
+	{
+		Physics2D.velocityThreshold = bounceTolerance;
+	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
@@ -30,6 +36,16 @@ public class BallCollision : MonoBehaviour
 			selfBall.hasStartedDeath = false;
 			otherBall.invincible = true;
 			otherBall.hasStartedDeath = false;
+
+			Rigidbody2D selfRb = GetComponent<Rigidbody2D>();
+			Rigidbody2D otherRb = other.gameObject.GetComponent<Rigidbody2D>();
+
+			if ((selfRb.velocity.y > 1f && otherRb.velocity.y > 1f) || (selfRb.velocity.y < -1f && otherRb.velocity.y < -1f))
+			{
+				GameStats.Instance.ballBouncesWithBallsThisRound += 0.5f;
+				GameStats.Instance.ballBouncesWithBallsOverall = PlayerPrefs.GetFloat("stat_bouncesWithBallsOverall") + 0.5f;
+				PlayerPrefs.SetFloat("stat_bouncesWithBallsOverall", GameStats.Instance.ballBouncesWithBallsOverall);
+			}
 		}
 	}
 
@@ -37,6 +53,6 @@ public class BallCollision : MonoBehaviour
 	{
 		// Update bounce count
 		if (transform.localScale == Vector3.one)
-			Debugger.Instance.bounces++;
+			GameEvents.OnBallBounced(this);
 	}
 }
