@@ -7,6 +7,7 @@ public class BallCollision : MonoBehaviour
 	public float bounceTolerance;
 	public float frictionStartValue;
 	public float bounceStartValue;
+	[SerializeField] Color32 hazardDeathColor;
 
 	void OnEnable()
 	{
@@ -46,6 +47,21 @@ public class BallCollision : MonoBehaviour
 				GameStats.Instance.ballBouncesWithBallsOverall = PlayerPrefs.GetFloat("stat_bouncesWithBallsOverall") + 0.5f;
 				PlayerPrefs.SetFloat("stat_bouncesWithBallsOverall", GameStats.Instance.ballBouncesWithBallsOverall);
 			}
+		}
+
+		// If collision with hazard, kill ball
+		if (other.collider.CompareTag("Hazard"))
+		{
+			GetComponent<BallController>().doDestroy = true;
+			GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+			GetComponent<SpriteRenderer>().color = hazardDeathColor;
+		}
+
+		// If collision with button, invoke event
+		if (other.collider.CompareTag("Button"))
+		{
+			other.gameObject.GetComponent<LevelEventTrigger>().DoConnectedAction();
+			Debug.Log("Button pressed!");
 		}
 	}
 

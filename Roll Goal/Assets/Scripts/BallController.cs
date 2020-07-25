@@ -25,7 +25,6 @@ public class BallController : MonoBehaviour
     public bool hasLaunched;
     public bool hasStartedDeath;
     public bool doDestroy; // Public to allow debugger to destroy balls
-    Vector3 lastPosition;
     float invincibilityTimer;
 
     void Awake()
@@ -42,7 +41,7 @@ public class BallController : MonoBehaviour
         if (ballCollision == null) Debug.LogError("ballCollision is null");
         if (trailRenderer == null) trailRenderer = GetComponent<TrailRenderer>();
         if (trailRenderer == null) Debug.LogError("trailRenderer is null");
-        if (anchorRb == null) anchorRb = transform.parent.GetComponent<Rigidbody2D>();
+        if (anchorRb == null) anchorRb = transform.parent.Find("anchor").GetComponent<Rigidbody2D>();
         if (anchorRb == null) Debug.LogError("anchorRb is null");
         if (selfCollider == null) selfCollider = GetComponent<CircleCollider2D>();
         if (selfCollider == null) Debug.LogError("selfCollider is null");
@@ -55,28 +54,20 @@ public class BallController : MonoBehaviour
 	void OnEnable()
 	{
         // Set default values
-        anchorRb.gameObject.SetActive(true);
-        transform.position = anchorRb.transform.position;
-        transform.localScale = Vector3.one;
-        trailRenderer.enabled = false;
-        selfRb.isKinematic = true;
+        anchorRb.gameObject.SetActive(true); // Set anchor active
+        springJoint.connectedBody = anchorRb; // Set spring joint connected RB
+        releaseDelay = 1 / (springJoint.frequency * 4);
+        debugger.ballsRemaining = level.ballsRemaining; // Set balls remaining count
+        debugger.ballInHand = true;
+        invincibilityTimer = invincilityTime; // Set invincibility timer
+
+        // Create physics material for bounciness & friction
         selfRb.sharedMaterial = new PhysicsMaterial2D()
         {
             name = "wallBounce",
             friction = ballCollision.frictionStartValue,
             bounciness = ballCollision.bounceStartValue
         };
-        selfCollider.isTrigger = true;
-        springJoint.enabled = false; springJoint.enabled = true;
-        releaseDelay = 1 / (springJoint.frequency * 4);
-        isPressed = false;
-        hasLaunched = false;
-        hasStartedDeath = false;
-        doDestroy = false;
-        ballCollision.enabled = false; ballCollision.enabled = true;
-        invincibilityTimer = invincilityTime;
-        debugger.ballsRemaining = level.ballsRemaining;
-        debugger.ballInHand = true;
     }
 
 	void Update()
@@ -159,8 +150,9 @@ public class BallController : MonoBehaviour
 
     void DestroyBall()
 	{
-        // Disable trail renderer
+        // Disable trail renderer & collider
         trailRenderer.enabled = false;
+        selfCollider.enabled = false;
         
         // Shrink ball
         Vector2 newScale = new Vector2(transform.localScale.x - shrinkDecrement, transform.localScale.y - shrinkDecrement);
@@ -172,7 +164,7 @@ public class BallController : MonoBehaviour
             FetchBall();
             debugger.activeBalls.Remove(gameObject);
             GameEvents.OnBallDestroyed(this);
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 	}
 

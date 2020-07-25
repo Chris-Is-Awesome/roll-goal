@@ -22,7 +22,7 @@ TagManager:
   - Level
   - Interactible
   - Prop
-  - 
+  - Enviroment
   - 
   - 
   - 
@@ -54,6 +54,9 @@ TagManager:
     locked: 0
   - name: Prop-Back
     uniqueID: 977263473
+    locked: 0
+  - name: Enviroment
+    uniqueID: 4229873305
     locked: 0
   - name: Ball
     uniqueID: 4259890263

@@ -5,12 +5,13 @@ using UnityEngine;
 public class LevelData : MonoBehaviour
 {
 	[Header("Refs")]
-	[SerializeField] ObjectPooler objPooler = null;
-	[SerializeField] Transform ballTrans = null;
+	[SerializeField] GameObject ballPrefab;
+	[SerializeField] Transform ballParent = null;
 	[Header("Data")]
 	public int level = 0;
 	public int ballsRemaining = 0;
 	public bool allowMultiple = false;
+	[SerializeField] [CustomAttributes.ReadOnly] int ballsHad = 0;
 	public Dictionary<Color, int> currKeys = new Dictionary<Color, int>()
 	{
 		{Color.blue, 0 },
@@ -23,15 +24,18 @@ public class LevelData : MonoBehaviour
 
 	void Start()
 	{
-		startPos = ballTrans.position;
-		objPooler.amountToPool = ballsRemaining - 1;
+		ballsHad++;
+		Transform ogBall = ballParent.Find("ball");
+		ogBall.name += "_1";
+		startPos = ogBall.position;
 	}
 	
 	public void GrantBall()
 	{
 		// Give player a new ball
-		GameObject newBall = objPooler.RequestObj();
+		GameObject newBall = Instantiate(ballPrefab, ballParent);
 		newBall.transform.position = startPos;
-		newBall.SetActive(true);
+		ballsHad++;
+		newBall.name = ballPrefab.name + "_" + ballsHad;
 	}
 }
