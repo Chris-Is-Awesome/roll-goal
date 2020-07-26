@@ -5,6 +5,7 @@ using ASG;
 
 public class LevelEventTrigger : MonoBehaviour
 {
+	#region Enums
 	public enum TriggerConditions
 	{
 		MonoBehaviour,
@@ -26,6 +27,14 @@ public class LevelEventTrigger : MonoBehaviour
 		OnEventEnd,
 	}
 
+	public enum Effects
+	{
+		NoEffect,
+		OnTimer,
+	}
+	#endregion
+
+	#region Enum Lists
 	List<TriggerConditions> collisionConds = new List<TriggerConditions>()
 	{
 		TriggerConditions.CollisionEnter,
@@ -39,10 +48,19 @@ public class LevelEventTrigger : MonoBehaviour
 		TriggerConditions.TriggerStay,
 		TriggerConditions.TriggerExit,
 	};
+	#endregion
 
+	#region Private Vars
+	public bool hasFiredAction;
+	public bool hasFiredEffect;
+	public float effectDelayTimer;
+	#endregion
+
+	#region Serialized Vars
 	[SerializeField]
 	[TextArea]
 	string description;
+
 	[Header("How should event be triggered?")]
 	[SerializeField]
 	[Tooltip("How should this event be triggered?")]
@@ -50,15 +68,54 @@ public class LevelEventTrigger : MonoBehaviour
 	[SerializeField]
 	[ConditionalField("eventTrigger", false, TriggerConditions.CollisionEnter, TriggerConditions.CollisionStay, TriggerConditions.CollisionExit, TriggerConditions.TriggerEnter, TriggerConditions.TriggerStay, TriggerConditions.TriggerExit)]
 	[Tooltip("What incoming collider's tag should trigger event on?")]
-	string tagToCompare;
+		string tagToCompare;
 
 	[Header("What should the event do once triggered?")]
-		[SerializeField] UnityEvent OnConnectedAction;
+	[SerializeField]
+		UnityEvent Action;
+
+	[Header("What should the event do after being triggered?")]
+	[SerializeField]
+	[Tooltip("How should the effect be triggered?")]
+		Effects postTriggerEffect = Effects.NoEffect;
+	[SerializeField]
+	[ConditionalField("postTriggerEffect", false, Effects.OnTimer)]
+	[Tooltip("How long should it wait aftet triggering event before this effect happens?")]
+		float effectDelay;
+	[SerializeField]
+	[ConditionalField("postTriggerEffect", true, Effects.NoEffect)]
+	[Tooltip("Should the action be reset when effect fires?")]
+		bool resetActionAfterFire;
+	[Space]
+	[SerializeField]
+		UnityEvent PostActionEffect;
+	#endregion
+
+	void Awake()
+	{
+		effectDelayTimer = effectDelay;
+	}
+
+	void Update()
+	{
+		if (hasFiredAction)
+		{
+			if (PostActionEffect != null && !hasFiredEffect)
+			{
+				if (effectDelayTimer > 0)
+					effectDelayTimer -= Time.deltaTime;
+				else if (!hasFiredEffect)
+					DoConnectedEffect();
+			}
+		}
+	}
 
 	void OnCollisionEnter2D(Collision2D other)
 	{
-		if (collisionConds.Contains(eventTrigger))
+		if (collisionConds.Contains(eventTrigger) && !string.IsNullOrEmpty(tagToCompare))
 		{
+			if (other.collider.CompareTag(tagToCompare))
+				DoConnectedAction();
 		}
 	}
 
@@ -73,7 +130,27 @@ public class LevelEventTrigger : MonoBehaviour
 
 	public void DoConnectedAction()
 	{
-		OnConnectedAction?.Invoke();
+		if (!hasFiredAction)
+		{
+			Action?.Invoke();
+			hasFiredAction = true;
+		}
+	}
+
+	public void DoConnectedEffect()
+	{
+		if (!hasFiredEffect)
+		{
+			PostActionEffect?.Invoke();
+			hasFiredEffect = true;
+		}
+
+		if (resetActionAfterFire)
+		{
+			effectDelayTimer = effectDelay;
+			hasFiredAction = false;
+			hasFiredEffect = false;
+		}
 	}
 
 	public void OutputMessage(string message)
