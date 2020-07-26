@@ -18,8 +18,8 @@ public class Debugger : Singleton<Debugger>
 	public bool goToNextLevel;
 	public bool goToPrevLevel;
 	[Header("Balls")]
-	[CustomAttributes.ReadOnly] public bool ballInHand;
-	[CustomAttributes.ReadOnly] public List<GameObject> activeBalls = new List<GameObject>();
+	[ReadOnlyAttributes.ReadOnly] public bool ballInHand;
+	[ReadOnlyAttributes.ReadOnly] public List<GameObject> activeBalls = new List<GameObject>();
 
 	void Awake()
 	{

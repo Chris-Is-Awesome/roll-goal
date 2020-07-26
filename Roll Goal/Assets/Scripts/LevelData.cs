@@ -11,7 +11,7 @@ public class LevelData : MonoBehaviour
 	public int level = 0;
 	public int ballsRemaining = 0;
 	public bool allowMultiple = false;
-	[SerializeField] [CustomAttributes.ReadOnly] int ballsHad = 0;
+	[SerializeField] [ReadOnlyAttributes.ReadOnly] int ballsHad = 0;
 	public Dictionary<Color, int> currKeys = new Dictionary<Color, int>()
 	{
 		{Color.blue, 0 },

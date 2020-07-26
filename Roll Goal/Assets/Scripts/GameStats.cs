@@ -9,26 +9,26 @@ public class GameStats : Singleton<GameStats>
 	private BallController currBall = null;
 	[Header("Stats")]
 	// Balls
-	[CustomAttributes.ReadOnly] public int ballsUsedThisRound;
-	[CustomAttributes.ReadOnly] public int ballsUsedOverall;
-	[CustomAttributes.ReadOnly] public int ballBouncesThisRound;
-	[CustomAttributes.ReadOnly] public int ballBouncesOverall;
-	[CustomAttributes.ReadOnly] public float ballBouncesWithBallsThisRound;
-	[CustomAttributes.ReadOnly] public float ballBouncesWithBallsOverall;
+	[ReadOnlyAttributes.ReadOnly] public int ballsUsedThisRound;
+	[ReadOnlyAttributes.ReadOnly] public int ballsUsedOverall;
+	[ReadOnlyAttributes.ReadOnly] public int ballBouncesThisRound;
+	[ReadOnlyAttributes.ReadOnly] public int ballBouncesOverall;
+	[ReadOnlyAttributes.ReadOnly] public float ballBouncesWithBallsThisRound;
+	[ReadOnlyAttributes.ReadOnly] public float ballBouncesWithBallsOverall;
 	// Speed
-	[CustomAttributes.ReadOnly] public string currentBallSpeed = "0.0 ft/s";
-	[CustomAttributes.ReadOnly] public string highestSpeedThisRound = "0.0 ft/s";
-	[CustomAttributes.ReadOnly] public string highestSpeedOverall = "0.0 ft/s";
+	[ReadOnlyAttributes.ReadOnly] public string currentBallSpeed = "0.0 ft/s";
+	[ReadOnlyAttributes.ReadOnly] public string highestSpeedThisRound = "0.0 ft/s";
+	[ReadOnlyAttributes.ReadOnly] public string highestSpeedOverall = "0.0 ft/s";
 	// Distance
-	[CustomAttributes.ReadOnly] public string currentBallDistance = "0.0 feet (0.0 miles)";
-	[CustomAttributes.ReadOnly] public string distanceThisRound = "0.0 feet (0.0 miles)";
-	[CustomAttributes.ReadOnly] public string highestDistanceThisRound = "0.0 feet (0.0 miles)";
-	[CustomAttributes.ReadOnly] public string distanceOverall = "0.0 feet (0.0 miles)";
+	[ReadOnlyAttributes.ReadOnly] public string currentBallDistance = "0.0 feet (0.0 miles)";
+	[ReadOnlyAttributes.ReadOnly] public string distanceThisRound = "0.0 feet (0.0 miles)";
+	[ReadOnlyAttributes.ReadOnly] public string highestDistanceThisRound = "0.0 feet (0.0 miles)";
+	[ReadOnlyAttributes.ReadOnly] public string distanceOverall = "0.0 feet (0.0 miles)";
 	// Time
-	[CustomAttributes.ReadOnly] public string currentTime = "00:00.000";
-	[CustomAttributes.ReadOnly] public string fastestTimeForLevel = "00:00.000";
-	[CustomAttributes.ReadOnly] public string totalTimeSpentOnLevel = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
-	[CustomAttributes.ReadOnly] public string totalTimePlayingGame = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
+	[ReadOnlyAttributes.ReadOnly] public string currentTime = "00:00.000";
+	[ReadOnlyAttributes.ReadOnly] public string fastestTimeForLevel = "00:00.000";
+	[ReadOnlyAttributes.ReadOnly] public string totalTimeSpentOnLevel = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
+	[ReadOnlyAttributes.ReadOnly] public string totalTimePlayingGame = "0y, 0mo, 0w, 0d, 0h, 0mi, 0s";
 	[Header("Data")]
 	Vector3 lastBallPosition;
 	float distanceInFeetCurrent;

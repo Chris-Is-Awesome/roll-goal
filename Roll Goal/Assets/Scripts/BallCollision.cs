@@ -14,17 +14,6 @@ public class BallCollision : MonoBehaviour
 		Physics2D.velocityThreshold = bounceTolerance;
 	}
 
-	void OnTriggerEnter2D(Collider2D other)
-	{
-		// If collision with flag, mark level as complete
-		if (other.gameObject.CompareTag("Flag"))
-		{
-			// TODO: Level complete!
-
-			Debug.Log("Completed level!");
-		}
-	}
-
 	void OnCollisionEnter2D(Collision2D other)
 	{
 		// If collision with ball, prevent death for a little bit
@@ -55,13 +44,6 @@ public class BallCollision : MonoBehaviour
 			GetComponent<BallController>().doDestroy = true;
 			GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
 			GetComponent<SpriteRenderer>().color = hazardDeathColor;
-		}
-
-		// If collision with button, invoke event
-		if (other.collider.CompareTag("Button"))
-		{
-			other.gameObject.GetComponent<LevelEventTrigger>().DoConnectedAction();
-			Debug.Log("Button pressed!");
 		}
 	}
 
