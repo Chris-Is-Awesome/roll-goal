@@ -50,12 +50,6 @@ public class LevelEventTrigger : MonoBehaviour
 	};
 	#endregion
 
-	#region Private Vars
-	public bool hasFiredAction;
-	public bool hasFiredEffect;
-	public float effectDelayTimer;
-	#endregion
-
 	#region Serialized Vars
 	[SerializeField]
 	[TextArea]
@@ -89,6 +83,21 @@ public class LevelEventTrigger : MonoBehaviour
 	[Space]
 	[SerializeField]
 		UnityEvent PostActionEffect;
+	#endregion
+
+	#region Private Vars
+	[Header("Debugging")]
+	[SerializeField]
+		bool doDebug;
+	[SerializeField]
+	[ConditionalField("doDebug", false, true)]
+		bool hasFiredAction;
+	[SerializeField]
+	[ConditionalField("doDebug", false, true)]
+		bool hasFiredEffect;
+	[SerializeField]
+	[ConditionalField("doDebug", false, true)]
+		float effectDelayTimer;
 	#endregion
 
 	void Awake()
