@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class BallController : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class BallController : MonoBehaviour
     [SerializeField] GameStats stats;
     [SerializeField] LevelData level;
     [SerializeField] Debugger debugger;
+    [SerializeField] Light2D pointLight;
     [SerializeField] TrailRenderer trailRenderer;
     [SerializeField] Rigidbody2D anchorRb;
     [SerializeField] Collider2D selfCollider;
@@ -39,6 +41,8 @@ public class BallController : MonoBehaviour
         if (debugger == null) debugger = gameMaster.AddComponent<Debugger>();
         if (ballCollision == null) ballCollision = GetComponent<BallCollision>();
         if (ballCollision == null) Debug.LogError("ballCollision is null");
+        if (pointLight == null) pointLight = GetComponent<Light2D>();
+        if (pointLight == null) Debug.LogError("Light is null");
         if (trailRenderer == null) trailRenderer = GetComponent<TrailRenderer>();
         if (trailRenderer == null) Debug.LogError("trailRenderer is null");
         if (anchorRb == null) anchorRb = transform.parent.Find("anchor").GetComponent<Rigidbody2D>();
@@ -157,6 +161,10 @@ public class BallController : MonoBehaviour
         // Shrink ball
         Vector2 newScale = new Vector2(transform.localScale.x - shrinkDecrement, transform.localScale.y - shrinkDecrement);
         transform.localScale = newScale;
+
+        // Shrink light
+        if (pointLight.enabled && pointLight.pointLightOuterRadius > 0)
+            pointLight.pointLightOuterRadius -= 0.05f;
 
         // Destroy ball if it's completely shrunken
         if (transform.localScale == Vector3.zero)
