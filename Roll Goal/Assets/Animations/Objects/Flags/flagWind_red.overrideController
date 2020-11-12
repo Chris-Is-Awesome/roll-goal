@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: flagWind_red
+  m_Controller: {fileID: 9100000, guid: 1433231d17303064fbfc185dbb706a28, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 70c82dc81b4e6794aab346348aa5e731, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d3738bb602387bd4ab25d20317f2aa84, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 462efd461c7308e419a84ec3a285605d, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 462efd461c7308e419a84ec3a285605d, type: 2}
