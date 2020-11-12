@@ -24,6 +24,7 @@ public class LevelData : MonoBehaviour
 
 	};
 	Vector3 startPos;
+	public bool hasFinished;
 
 	void Start()
 	{
@@ -63,5 +64,10 @@ public class LevelData : MonoBehaviour
 		// Set ball light if dark level
 		Light2D ballLight = ball.GetComponent<Light2D>();
 		ballLight.enabled = isDarkLevel;
+	}
+
+	public void WinLevel()
+	{
+		GameEvents.OnLevelFinished(true, GameStats.Instance.ballsUsedThisRound);
 	}
 }

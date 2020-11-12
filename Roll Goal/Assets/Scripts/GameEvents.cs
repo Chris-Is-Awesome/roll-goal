@@ -22,8 +22,21 @@ public static class GameEvents
 	public static event Action<bool, int> OnLevelFinish;
 	public static void OnLevelFinished(bool win, int ballsUsed)
 	{
-		// TODO: Trigger failure screen!
-		Debug.Log("No more balls remaining! Level ending...");
+		LevelData levelData = Utility.GetLevelData();
+
+		if (!levelData.hasFinished)
+		{
+			if(win)
+			{
+					Debug.Log("Level completed! Used " + ballsUsed + " balls.");
+				}
+			else
+			{
+				Debug.Log("ohno... you ran out of balls :(");
+			}
+		}
+
+		levelData.hasFinished = true;
 
 		OnLevelFinish?.Invoke(win, ballsUsed);
 	}
