@@ -33,8 +33,11 @@ public class LevelData : MonoBehaviour
 		startPos = ogBall.position;
 
 		// Lighting
-		SetLevelLight(GetComponent<Light2D>());
-		SetBallLight(ogBall.gameObject);
+		if (isDarkLevel)
+		{
+			SetLevelLight(GetComponent<Light2D>());
+			SetBallLight(ogBall.gameObject);
+		}
 	}
 	
 	public void GrantBall()
